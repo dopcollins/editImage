@@ -6,57 +6,82 @@ struct ToolsView: View {
     @State private var navigateToPolynomialAdjustment = false
 
     var body: some View {
-        VStack {
-            if let image = selectedImage {
-                Image(uiImage: image)
-                    .resizable()
-                    .scaledToFit()
-                    .frame(height: 300)
-                    .padding()
-            } else {
-                Text("No image selected")
-                    .foregroundColor(.gray)
-                    .font(.headline)
-            }
-
-            Spacer()
-
-            HStack(spacing: 15) {
-                NavigationLink(destination: CropView(image: $selectedImage)) {
-                    toolButton(title: "Crop", systemImage: "crop")
+        VStack(spacing: 0) {
+            // Image Preview (Centered)
+            GeometryReader { geometry in
+                VStack {
+                    if let image = selectedImage {
+                        Image(uiImage: image)
+                            .resizable()
+                            .scaledToFit()
+                            .frame(maxHeight: 300)
+                            .clipShape(RoundedRectangle(cornerRadius: 8))
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 8)
+                                    .stroke(Color.gray.opacity(0.3), lineWidth: 1)
+                            )
+                            .shadow(color: Color.black.opacity(0.1), radius: 5, x: 0, y: 2)
+                    } else {
+                        Text("No image selected")
+                            .foregroundColor(.gray)
+                            .font(.headline)
+                    }
                 }
-
-                NavigationLink(destination: DetailsView(image: $selectedImage)) {
-                    toolButton(title: "Details", systemImage: "slider.horizontal.3")
-                }
-                
-                NavigationLink(destination: TuneImageView(image: $selectedImage)) {
-                    toolButton(title: "Tune", systemImage: "slider.horizontal.below.square.filled.and.square")
-                }
-                
-                NavigationLink(destination: DrawOnImageView(selectedImage: $selectedImage)) {
-                    toolButton(title: "Draw", systemImage: "pencil.tip.crop.circle")
-                }
-                
-                NavigationLink(destination: TextOverlayView(selectedImage: $selectedImage)) {
-                    toolButton(title: "Text", systemImage: "textformat")
-                }
+                .frame(maxWidth: .infinity, maxHeight: .infinity) // Center within GeometryReader
             }
             .padding()
+
+            // Tools Toolbar
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack(spacing: 12) {
+                    NavigationLink(destination: CropView(image: $selectedImage)) {
+                        toolButton(title: "Crop", systemImage: "crop")
+                    }
+
+                    NavigationLink(destination: DetailsView(image: $selectedImage)) {
+                        toolButton(title: "Details", systemImage: "slider.horizontal.3")
+                    }
+                    
+                    NavigationLink(destination: TuneImageView(image: $selectedImage)) {
+                        toolButton(title: "Tune", systemImage: "slider.horizontal.below.square.filled.and.square")
+                    }
+                    
+                    NavigationLink(destination: DrawOnImageView(selectedImage: $selectedImage)) {
+                        toolButton(title: "Draw", systemImage: "pencil.tip.crop.circle")
+                    }
+                    
+                    NavigationLink(destination: TextOverlayView(selectedImage: $selectedImage)) {
+                        toolButton(title: "Text", systemImage: "textformat")
+                    }
+                }
+                .padding(.horizontal, 15)
+                .padding(.vertical, 10)
+                .background(
+                    RoundedRectangle(cornerRadius: 12)
+                        .fill(Color(.systemBackground))
+                        .shadow(color: Color.black.opacity(0.1), radius: 5, x: 0, y: -2)
+                )
+                .padding(.horizontal, 10)
+                .padding(.bottom, 10)
+            }
         }
     }
 
     func toolButton(title: String, systemImage: String) -> some View {
-        VStack {
+        VStack(spacing: 4) {
             Image(systemName: systemImage)
-                .font(.system(size: 24))
-                .foregroundColor(.white)
+                .font(.system(size: 20, weight: .medium))
+                .foregroundColor(.primary)
             Text(title)
-                .font(.headline)
-                .foregroundColor(.white)
+                .font(.caption)
+                .foregroundColor(.primary)
         }
-        .frame(width: 80, height: 80)
-        .background(Color.gray)
-        .cornerRadius(10)
+        .frame(width: 60, height: 60)
+        .background(
+            Circle()
+                .fill(Color.gray.opacity(0.2))
+                .shadow(radius: 2)
+        )
+        .contentShape(Circle())
     }
 }

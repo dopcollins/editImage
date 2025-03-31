@@ -1,4 +1,5 @@
-import SwiftUI
+
+ import SwiftUI
 
 struct ContentView: View {
     @StateObject private var model = ImageEditModel()
@@ -83,6 +84,7 @@ struct ContentView: View {
                             .foregroundColor(.white)
                             .background(Color.gray)
                             .cornerRadius(10)
+                            .shadow(color: Color.black.opacity(0.1), radius: 5, x: 0, y: -2)
                             .padding()
                     }
                     
@@ -95,6 +97,7 @@ struct ContentView: View {
                             .foregroundColor(.white)
                             .background(Color.gray)
                             .cornerRadius(10)
+                            .shadow(color: Color.black.opacity(0.1), radius: 5, x: 0, y: -2)
                             .padding()
                     }
                 }

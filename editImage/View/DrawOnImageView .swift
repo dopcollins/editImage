@@ -5,128 +5,138 @@ struct DrawOnImageView: View {
     @Binding var selectedImage: UIImage?
     @State private var canvasView = PKCanvasView()
     @State private var isToolPickerVisible = true
+    @State private var imageFrame: CGRect = .zero
     @Environment(\.dismiss) var dismiss
-    
+
     var body: some View {
-        GeometryReader { geometry in
-            VStack(spacing: 0) {
-                ZStack(alignment: .center) {
+        VStack(spacing: 0) {
+            // Canvas and Image Area
+            GeometryReader { geometry in
+                ZStack {
                     if let image = selectedImage {
                         Image(uiImage: image)
                             .resizable()
                             .scaledToFit()
-                            .frame(maxWidth: geometry.size.width, maxHeight: geometry.size.height * 0.8)
-                            .background(GeometryReader { imageGeo in
-                                Color.clear
-                                    .onAppear {
-                                        // Match canvas size to the image's displayed size
-                                        let displaySize = imageGeo.size
-                                        canvasView.frame = CGRect(origin: .zero, size: displaySize)
-                                        canvasView.bounds = CGRect(origin: .zero, size: displaySize)
+                            .background(
+                                GeometryReader { imageGeo in
+                                    Color.clear.onAppear {
+                                        DispatchQueue.main.async {
+                                            updateCanvasSize(imageSize: image.size, displaySize: imageGeo.size)
+                                        }
                                     }
-                            })
+                                }
+                            )
                     }
                     CanvasView(canvas: $canvasView, isToolPickerVisible: $isToolPickerVisible)
-                        .frame(maxWidth: geometry.size.width, maxHeight: geometry.size.height * 0.8)
+                        .frame(width: imageFrame.width, height: imageFrame.height)
                         .background(Color.clear)
                 }
-                .background(Color.gray.opacity(0.1))
-                .clipped()
-                .overlay(
-                    RoundedRectangle(cornerRadius: 8)
-                        .stroke(Color.gray, lineWidth: 1)
-                )
-                
-                HStack(spacing: 15) {
-                    toolButton(title: "Undo", systemImage: "arrow.uturn.left") {
+                .frame(maxWidth: .infinity, maxHeight: .infinity) // Center the content
+            }
+            .padding(.top, 10)
+
+            // Toolbar
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack(spacing: 12) {
+                    toolButton(systemImage: "arrow.uturn.left", action: {
                         canvasView.undoManager?.undo()
-                    }
+                    })
                     .disabled(!(canvasView.undoManager?.canUndo ?? false))
-                    
-                    toolButton(title: "Redo", systemImage: "arrow.uturn.right") {
+
+                    toolButton(systemImage: "arrow.uturn.right", action: {
                         canvasView.undoManager?.redo()
-                    }
+                    })
                     .disabled(!(canvasView.undoManager?.canRedo ?? false))
-                    
-                    toolButton(title: "Clear", systemImage: "trash") {
+
+                    toolButton(systemImage: "trash", action: {
                         canvasView.drawing = PKDrawing()
-                    }
-                    
-                    toolButton(title: isToolPickerVisible ? "Hide" : "Tools", systemImage: isToolPickerVisible ? "eye.slash" : "eye") {
+                    })
+
+                    toolButton(systemImage: isToolPickerVisible ? "eye.slash" : "eye", action: {
                         isToolPickerVisible.toggle()
-                    }
-                    
+                    })
+
                     Spacer()
-                    
-                    toolButton(title: "Cancel", systemImage: "xmark") {
+
+                    toolButton(systemImage: "xmark", action: {
                         dismiss()
-                    }
-                    
-                    toolButton(title: "Save", systemImage: "checkmark") {
-                        saveDrawingToImage(geometry: geometry)
+                    })
+
+                    toolButton(systemImage: "checkmark", action: {
+                        saveDrawingToImage()
                         dismiss()
-                    }
+                    })
                 }
-                .padding()
-                .frame(maxWidth: geometry.size.width)
-                .background(Color(.systemBackground))
+                .padding(.horizontal, 15)
+                .padding(.vertical, 10)
+                .background(
+                    RoundedRectangle(cornerRadius: 12)
+                        .fill(Color(.systemBackground))
+                        .shadow(color: Color.black.opacity(0.1), radius: 5, x: 0, y: -2)
+                )
+                .padding(.horizontal, 10)
+                .padding(.bottom, 80)
             }
         }
         .navigationTitle("Draw on Image")
         .navigationBarTitleDisplayMode(.inline)
     }
-    
-    private func saveDrawingToImage(geometry: GeometryProxy) {
+
+    private func updateCanvasSize(imageSize: CGSize, displaySize: CGSize) {
+        let aspectRatio = imageSize.width / imageSize.height
+        let newWidth = min(displaySize.width, displaySize.height * aspectRatio)
+        let newHeight = newWidth / aspectRatio
+        imageFrame = CGRect(x: 0, y: 0, width: newWidth, height: newHeight)
+        canvasView.frame = imageFrame
+        canvasView.bounds = imageFrame
+    }
+
+    private func saveDrawingToImage() {
         guard let originalImage = selectedImage else { return }
-        
         let imageSize = originalImage.size
-        let displaySize = canvasView.bounds.size // Use the canvas's bounds (set to displayed size)
-        _ = imageSize.width / displaySize.width
-        _ = imageSize.height / displaySize.height
-        
+        let scaleFactor = imageSize.width / imageFrame.width
+
         let renderer = UIGraphicsImageRenderer(size: imageSize)
         let newImage = renderer.image { context in
-            // Draw the original image
             originalImage.draw(in: CGRect(origin: .zero, size: imageSize))
-            
-            // Get the drawing and scale it to the original image size
-            let drawingImage = canvasView.drawing.image(from: canvasView.bounds, scale: UIScreen.main.scale)
-            drawingImage.draw(in: CGRect(
-                x: 0,
-                y: 0,
-                width: imageSize.width,
-                height: imageSize.height
-            ))
+            let drawingImage = canvasView.drawing.image(from: canvasView.bounds, scale: scaleFactor)
+            drawingImage.draw(in: CGRect(origin: .zero, size: imageSize))
         }
-        
+
         selectedImage = newImage
         canvasView.drawing = PKDrawing()
     }
-    
-    private func toolButton(title: String, systemImage: String, action: @escaping () -> Void) -> some View {
-        Button(action: action) {
-            VStack {
-                Image(systemName: systemImage)
-                    .font(.system(size: 20))
-                Text(title)
-                    .font(.caption)
+
+    private func toolButton(systemImage: String, action: @escaping () -> Void) -> some View {
+        Button(action: {
+            withAnimation(.easeInOut(duration: 0.2)) {
+                action()
             }
-            .frame(width: 60, height: 60)
-            .background(Color.gray.opacity(0.2))
-            .foregroundColor(.primary)
-            .cornerRadius(8)
+            // Optional: Add haptic feedback
+            UIImpactFeedbackGenerator(style: .light).impactOccurred()
+        }) {
+            Image(systemName: systemImage)
+                .font(.system(size: 20, weight: .medium))
+                .frame(width: 44, height: 44)
+                .foregroundColor(.primary)
+                .background(
+                    Circle()
+                        .fill(Color.gray.opacity(0.2))
+                        .shadow(radius: 2)
+                )
         }
     }
 }
 
+// CanvasView remains unchanged
 struct CanvasView: UIViewRepresentable {
     @Binding var canvas: PKCanvasView
     @Binding var isToolPickerVisible: Bool
-    
+
     func makeCoordinator() -> Coordinator {
         Coordinator(self)
     }
-    
+
     func makeUIView(context: Context) -> PKCanvasView {
         canvas.drawingPolicy = .anyInput
         canvas.isOpaque = false
@@ -135,32 +145,52 @@ struct CanvasView: UIViewRepresentable {
         context.coordinator.setupToolPicker(for: canvas)
         return canvas
     }
-    
+
     func updateUIView(_ uiView: PKCanvasView, context: Context) {
         context.coordinator.updateToolPickerVisibility(isVisible: isToolPickerVisible, for: uiView)
     }
-    
+
     class Coordinator {
         private let parent: CanvasView
         private let toolPicker: PKToolPicker
-        
+
         init(_ parent: CanvasView) {
             self.parent = parent
-            self.toolPicker = PKToolPicker()
+            if #available(iOS 14.0, *) {
+                self.toolPicker = PKToolPicker()
+            } else {
+                if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+                   let window = windowScene.windows.first {
+                    guard let picker = PKToolPicker.shared(for: window) else {
+                        fatalError("Unable to create PKToolPicker: No tool picker available for the window.")
+                    }
+                    self.toolPicker = picker
+                } else {
+                    fatalError("No window found to initialize PKToolPicker.")
+                }
+            }
         }
-        
+
         func setupToolPicker(for canvas: PKCanvasView) {
-            toolPicker.addObserver(canvas)
+            if #available(iOS 14.0, *) {
+                toolPicker.addObserver(canvas)
+            }
             toolPicker.setVisible(parent.isToolPickerVisible, forFirstResponder: canvas)
             if parent.isToolPickerVisible {
                 canvas.becomeFirstResponder()
             }
         }
-        
+
         func updateToolPickerVisibility(isVisible: Bool, for canvas: PKCanvasView) {
             toolPicker.setVisible(isVisible, forFirstResponder: canvas)
             if isVisible {
                 canvas.becomeFirstResponder()
+            }
+        }
+
+        deinit {
+            if #available(iOS 14.0, *) {
+                toolPicker.removeObserver(parent.canvas)
             }
         }
     }
