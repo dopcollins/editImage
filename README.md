@@ -8,3 +8,4 @@ About the app
 Future Enhancements
   - Improved UI for tool selection
   - More filters & effects
+  - Custom save options
