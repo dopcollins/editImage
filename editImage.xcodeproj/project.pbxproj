@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		F188FEBE2D8B46B60072AD16 /* DrawOnImage in Frameworks */ = {isa = PBXBuildFile; productRef = F188FEBD2D8B46B60072AD16 /* DrawOnImage */; };
 		F18C4F1B2D65D3FA00612F8C /* CropViewController in Frameworks */ = {isa = PBXBuildFile; productRef = F18C4F1A2D65D3FA00612F8C /* CropViewController */; };
 		F18C4F1D2D65D3FA00612F8C /* TOCropViewController in Frameworks */ = {isa = PBXBuildFile; productRef = F18C4F1C2D65D3FA00612F8C /* TOCropViewController */; };
 /* End PBXBuildFile section */
@@ -57,7 +56,6 @@
 			files = (
 				F18C4F1D2D65D3FA00612F8C /* TOCropViewController in Frameworks */,
 				F18C4F1B2D65D3FA00612F8C /* CropViewController in Frameworks */,
-				F188FEBE2D8B46B60072AD16 /* DrawOnImage in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -111,7 +109,6 @@
 			packageProductDependencies = (
 				F18C4F1A2D65D3FA00612F8C /* CropViewController */,
 				F18C4F1C2D65D3FA00612F8C /* TOCropViewController */,
-				F188FEBD2D8B46B60072AD16 /* DrawOnImage */,
 			);
 			productName = editImage;
 			productReference = F18C4F082D65D3DC00612F8C /* editImage.app */;
@@ -143,7 +140,6 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				F18C4F192D65D3FA00612F8C /* XCRemoteSwiftPackageReference "TOCropViewController" */,
-				F188FEBC2D8B46B60072AD16 /* XCRemoteSwiftPackageReference "SwiftUI-DrawOnImage" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = F18C4F092D65D3DC00612F8C /* Products */;
@@ -381,14 +377,6 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		F188FEBC2D8B46B60072AD16 /* XCRemoteSwiftPackageReference "SwiftUI-DrawOnImage" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/bsorrentino/SwiftUI-DrawOnImage";
-			requirement = {
-				branch = main;
-				kind = branch;
-			};
-		};
 		F18C4F192D65D3FA00612F8C /* XCRemoteSwiftPackageReference "TOCropViewController" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/TimOliver/TOCropViewController";
@@ -400,11 +388,6 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		F188FEBD2D8B46B60072AD16 /* DrawOnImage */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = F188FEBC2D8B46B60072AD16 /* XCRemoteSwiftPackageReference "SwiftUI-DrawOnImage" */;
-			productName = DrawOnImage;
-		};
 		F18C4F1A2D65D3FA00612F8C /* CropViewController */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = F18C4F192D65D3FA00612F8C /* XCRemoteSwiftPackageReference "TOCropViewController" */;

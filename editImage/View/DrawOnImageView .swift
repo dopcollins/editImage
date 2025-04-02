@@ -52,7 +52,7 @@ struct DrawOnImageView: View {
                         canvasView.drawing = PKDrawing()
                     })
 
-                    toolButton(systemImage: isToolPickerVisible ? "eye.slash" : "eye", action: {
+                    toolButton(systemImage: isToolPickerVisible ? "pencil.slash" : "pencil", action: {
                         isToolPickerVisible.toggle()
                     })
 

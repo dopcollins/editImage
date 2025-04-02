@@ -1,9 +1,3 @@
-//
-//  ImageModel.swift
-//  editImage
-//
-//  Created by Collins Roy on 19/02/25.
-//
 import Foundation
 import SwiftUI
 

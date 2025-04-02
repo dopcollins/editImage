@@ -6,34 +6,31 @@ struct ToolsView: View {
     @State private var navigateToPolynomialAdjustment = false
 
     var body: some View {
-        VStack(spacing: 0) {
-            // Image Preview (Centered)
-            GeometryReader { geometry in
-                VStack {
-                    if let image = selectedImage {
+        VStack(spacing: 20) {
+            // Image Preview (Responsive with background-matching border)
+            if let image = selectedImage {
+                GeometryReader { geometry in
+                    VStack {
                         Image(uiImage: image)
                             .resizable()
                             .scaledToFit()
-                            .frame(maxHeight: 300)
-                            .clipShape(RoundedRectangle(cornerRadius: 8))
+                            .frame(maxHeight: geometry.size.height * 0.7)
+                            .clipShape(RoundedRectangle(cornerRadius: 12))
                             .overlay(
-                                RoundedRectangle(cornerRadius: 8)
-                                    .stroke(Color.gray.opacity(0.3), lineWidth: 1)
+                                RoundedRectangle(cornerRadius: 12)
+                                    .stroke(Color(.systemBackground), style: StrokeStyle(lineWidth: 1)) // Border matches background
                             )
-                            .shadow(color: Color.black.opacity(0.1), radius: 5, x: 0, y: 2)
-                    } else {
-                        Text("No image selected")
-                            .foregroundColor(.gray)
-                            .font(.headline)
+                            .shadow(color: .black.opacity(0.1), radius: 5, x: 0, y: 2)
                     }
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
                 }
-                .frame(maxWidth: .infinity, maxHeight: .infinity) // Center within GeometryReader
+                .padding(.horizontal, 20)
+                .padding(.top, 20)
             }
-            .padding()
 
             // Tools Toolbar
             ScrollView(.horizontal, showsIndicators: false) {
-                HStack(spacing: 12) {
+                HStack(spacing: 15) {
                     NavigationLink(destination: CropView(image: $selectedImage)) {
                         toolButton(title: "Crop", systemImage: "crop")
                     }
@@ -49,39 +46,41 @@ struct ToolsView: View {
                     NavigationLink(destination: DrawOnImageView(selectedImage: $selectedImage)) {
                         toolButton(title: "Draw", systemImage: "pencil.tip.crop.circle")
                     }
-                    
-                    NavigationLink(destination: TextOverlayView(selectedImage: $selectedImage)) {
-                        toolButton(title: "Text", systemImage: "textformat")
-                    }
                 }
-                .padding(.horizontal, 15)
-                .padding(.vertical, 10)
+                .padding(.horizontal, 20)
+                .padding(.vertical, 15)
                 .background(
-                    RoundedRectangle(cornerRadius: 12)
+                    RoundedRectangle(cornerRadius: 15)
                         .fill(Color(.systemBackground))
-                        .shadow(color: Color.black.opacity(0.1), radius: 5, x: 0, y: -2)
+                        .shadow(color: .black.opacity(0.15), radius: 8, x: 0, y: 4)
                 )
-                .padding(.horizontal, 10)
-                .padding(.bottom, 10)
+                .padding(.horizontal, 15)
+                .padding(.bottom, 20)
             }
         }
     }
 
     func toolButton(title: String, systemImage: String) -> some View {
-        VStack(spacing: 4) {
+        VStack(spacing: 6) {
             Image(systemName: systemImage)
-                .font(.system(size: 20, weight: .medium))
+                .font(.system(size: 22, weight: .medium))
                 .foregroundColor(.primary)
             Text(title)
-                .font(.caption)
+                .font(.caption.bold())
                 .foregroundColor(.primary)
         }
-        .frame(width: 60, height: 60)
+        .frame(width: 70, height: 70)
         .background(
             Circle()
-                .fill(Color.gray.opacity(0.2))
-                .shadow(radius: 2)
+                .fill(Color.gray.opacity(0.15))
+                .shadow(radius: 3)
         )
+        .overlay(
+            Circle()
+                .stroke(Color.gray.opacity(0.3), style: StrokeStyle(lineWidth: 1))
+        )
+        .scaleEffect(1.0)
         .contentShape(Circle())
+        .accessibilityLabel(title)
     }
 }

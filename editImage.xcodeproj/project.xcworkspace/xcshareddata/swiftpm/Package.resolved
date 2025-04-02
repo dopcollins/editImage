@@ -1,24 +1,6 @@
 {
-  "originHash" : "38f2062bbb22357f9b550fde8894be7195ff1c62a100eb0e1e2853d8dfe483ab",
+  "originHash" : "c3d89634dea2e7a8af08ba58660448010a0c6a0ae5b17e56739d16c625b16289",
   "pins" : [
-    {
-      "identity" : "swiftui-drawonimage",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/bsorrentino/SwiftUI-DrawOnImage",
-      "state" : {
-        "branch" : "main",
-        "revision" : "236bb98a9d911f3f045d68ea73f2f3d9bb1a7b8f"
-      }
-    },
-    {
-      "identity" : "swiftui-introspect",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/siteline/SwiftUI-Introspect.git",
-      "state" : {
-        "revision" : "121c146fe591b1320238d054ae35c81ffa45f45a",
-        "version" : "0.12.0"
-      }
-    },
     {
       "identity" : "tocropviewcontroller",
       "kind" : "remoteSourceControl",

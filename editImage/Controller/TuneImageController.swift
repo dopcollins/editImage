@@ -1,10 +1,3 @@
-//
-//  TuneImageController.swift
-//  editImage
-//
-//  Created by Collins Roy on 19/03/25.
-//
-
 import Foundation
 import SwiftUI
 import CoreImage

@@ -1,10 +1,3 @@
-//
-//  DrawOnImageModel.swift
-//  editImage
-//
-//  Created by Collins Roy on 19/03/25.
-//
-
 import UIKit
 import PencilKit
 
