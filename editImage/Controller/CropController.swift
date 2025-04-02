@@ -21,4 +21,5 @@ class CropController: NSObject, ObservableObject, TOCropViewControllerDelegate {
     func cropViewController(_ cropViewController: TOCropViewController, didFinishCancelled cancelled: Bool) {
         cropViewController.dismiss(animated: true)
     }
+    
 }

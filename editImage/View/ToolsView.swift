@@ -7,7 +7,6 @@ struct ToolsView: View {
 
     var body: some View {
         VStack(spacing: 20) {
-            // Image Preview (Responsive with background-matching border)
             if let image = selectedImage {
                 GeometryReader { geometry in
                     VStack {
@@ -28,7 +27,7 @@ struct ToolsView: View {
                 .padding(.top, 20)
             }
 
-            // Tools Toolbar
+            
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: 15) {
                     NavigationLink(destination: CropView(image: $selectedImage)) {
