@@ -20,7 +20,8 @@ struct TuneImageView: View {
                 Image(uiImage: adjustedImage)
                     .resizable()
                     .scaledToFit()
-                    .edgesIgnoringSafeArea(.all)
+                    .frame(maxWidth: .infinity, maxHeight: .infinity) 
+                    .padding()
             } else {
                 Text("Loading image...")
                     .foregroundColor(.gray)
@@ -29,7 +30,7 @@ struct TuneImageView: View {
 
             Spacer()
 
-            VStack {
+            VStack(spacing: 12) {
                 Text("Smoothness").foregroundColor(.black)
                 Slider(value: $controller.model.smoothness, in: 0...2, onEditingChanged: { _ in
                     controller.applyFilters()
@@ -47,7 +48,8 @@ struct TuneImageView: View {
                 presentationMode.wrappedValue.dismiss()
             }
             .padding()
+            .buttonStyle(.borderedProminent)
         }
+        .padding(.horizontal)
     }
 }
-

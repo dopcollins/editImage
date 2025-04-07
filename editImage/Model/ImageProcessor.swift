@@ -25,7 +25,7 @@ class ImageProcessor {
         
         if let outputImage = shadowFilter.outputImage,
            let cgImage = context.createCGImage(outputImage, from: outputImage.extent) {
-            return UIImage(cgImage: cgImage, scale: image.scale, orientation: image.imageOrientation) // ✅ Preserve orientation
+            return UIImage(cgImage: cgImage, scale: image.scale, orientation: image.imageOrientation) 
         }
         return image
     }

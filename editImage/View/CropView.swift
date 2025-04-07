@@ -16,7 +16,7 @@ struct CropView: UIViewControllerRepresentable {
 
         func cropViewController(_ cropViewController: TOCropViewController, didCropTo image: UIImage, with cropRect: CGRect, angle: Int) {
             DispatchQueue.main.async {
-                self.parent.image = image  // ✅ Updates binding safely
+                self.parent.image = image
                 self.parent.presentationMode.wrappedValue.dismiss()
             }
         }
@@ -38,11 +38,10 @@ struct CropView: UIViewControllerRepresentable {
         }
         
         let cropViewController = TOCropViewController(image: selectedImage)
-        cropViewController.delegate = context.coordinator  // ✅ Set delegate to coordinator
+        cropViewController.delegate = context.coordinator 
         return cropViewController
     }
 
     func updateUIViewController(_ uiViewController: TOCropViewController, context: Context) {
-        // No direct state updates here to avoid SwiftUI warning
     }
 }

@@ -10,7 +10,6 @@ struct DrawOnImageView: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            // Canvas and Image Area
             GeometryReader { geometry in
                 ZStack {
                     if let image = selectedImage {
@@ -35,7 +34,7 @@ struct DrawOnImageView: View {
             }
             .padding(.top, 10)
 
-            // Toolbar
+            
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: 12) {
                     toolButton(systemImage: "arrow.uturn.left", action: {
@@ -112,7 +111,6 @@ struct DrawOnImageView: View {
             withAnimation(.easeInOut(duration: 0.2)) {
                 action()
             }
-            // Optional: Add haptic feedback
             UIImpactFeedbackGenerator(style: .light).impactOccurred()
         }) {
             Image(systemName: systemImage)
@@ -128,7 +126,6 @@ struct DrawOnImageView: View {
     }
 }
 
-// CanvasView remains unchanged
 struct CanvasView: UIViewRepresentable {
     @Binding var canvas: PKCanvasView
     @Binding var isToolPickerVisible: Bool
